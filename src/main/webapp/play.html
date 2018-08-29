@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Play</title>
+    <link rel="stylesheet" href="CSS/base.css" type="text/css">
+    <link rel="stylesheet" href="CSS/C_CSS.css" type="text/css">
+    <link rel="stylesheet" href="CSS/ts_StyleSheet.css">
+    <script src="JS/jquery-3.3.1.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function () {
+            //弹幕
+            $(".play_2_right_2").click(function () {
+                var $ch = $(this).children();
+                if ($ch.attr("class") == "play_2_right_2_open") {
+                    $ch.attr("class", "play_2_right_2_close");
+                } else {
+                    $ch.attr("class", "play_2_right_2_open");
+                }
+
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="dc">
+    <div class="first">
+        <div class="top">
+            <div class="top_1">
+                <img src="image/play/logo1.png" width="100">
+            </div>
+            <div class="top_2">
+                <div class="top_2_1">
+                    <ul class="top_2_2">
+                        <li><a href="#">首页</a></li>
+                        <li><a href="#">剧集</a></li>
+                        <li><a href="#">电影</a></li>
+                        <li><a href="#">自频道</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="top_3">
+                <div class="top_3_1">
+                    <input type="text">
+                    <button type="submit">搜库</button>
+                </div>
+            </div>
+            <div class="top_4">
+                <div class="top_4_1">
+                    <div class="handle">
+                        <a href="#">
+                            <img src="image/play/vip.png" width="25">
+                            <p>"VIP"</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="top_4_2">
+                    <div class="handle">
+                        <a href="#">
+                            <i class="icon"></i>
+                            <p>"收藏"</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="top_4_3">
+                    <div class="handle">
+                        <a href="#">
+                            <i class="icon"></i>
+                            <p>"历史"</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="top_4_4">
+                    <div class="login"><a href="#">
+                        <img src="image/play/touxiang.png">
+                    </a></div>
+                </div>
+            </div>
+        </div>
+        <div class="play">
+            <div class="play_1">
+                <video controls="controls" autoplay="autoplay" src="video/拾金不昧.mp4" width="1100" height="488"></video>
+            </div>
+            <div class="play_2">
+                <div class="play_2_1">
+                    <ul>
+                        <li class="play_2_2"><a href="#">
+                            <span><i class="icon"></i></span>
+                            <span><p>收藏</p></span>
+                        </a></li>
+                        <li class="play_2_3"><a href="#">
+                            <span><i class="icon"></i></span>
+                            <span><p>下载</p></span>
+                        </a></li>
+                    </ul>
+                </div>
+                <div class="play_2_right">
+                    <div class="play_2_right_1">
+                        <input type="text" placeholder="来条弹幕吧~~~">
+                        <button type="button">发送</button>
+                    </div>
+                    <div class="play_2_right_2">
+                        <a href="javascripts:;" class="play_2_right_2_open">
+                            <span>弹</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="play_3">
+                <div class="play_3_1">
+                    <p class="play_3_1_1">公益广告</p>
+                    <p class="play_3_1_2">每周五更新一集 会员版每周一更新一集</p>
+                    <p class="play_3_1_3">你可能喜欢的节目</p>
+                </div>
+                <div class="play_3_2">
+                    <a class="play_3_2_1" href="#">
+                        <img src="image/play/054102015B792A2F00000176D30D19D4.jpg" width="160" height="90"/>
+                    </a>
+                    <div class="play_3_2_2">
+                        <a href="#" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
+                    </div>
+                    <div class="play_3_2_3"><span>8679次播放</span></div>
+                </div>
+                <div class="play_3_2">
+                    <a class="play_3_2_1" href="#">
+                        <img src="image/play/054102015B792A2F00000176D30D19D4.jpg" width="160" height="90"/>
+                    </a>
+                    <div class="play_3_2_2">
+                        <a href="#" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
+                    </div>
+                    <div class="play_3_2_3"><span>8679次播放</span></div>
+                </div>
+                <div class="play_3_2">
+                    <a class="play_3_2_1" href="#">
+                        <img src="image/play/054102015B792A2F00000176D30D19D4.jpg" width="160" height="90"/>
+                    </a>
+                    <div class="play_3_2_2">
+                        <a href="#" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
+                    </div>
+                    <div class="play_3_2_3"><span>8679次播放</span></div>
+                </div>
+                <div class="play_3_2">
+                    <a class="play_3_2_1" href="#">
+                        <img src="image/play/054102015B792A2F00000176D30D19D4.jpg" width="160" height="90"/>
+                    </a>
+                    <div class="play_3_2_2">
+                        <a href="#" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
+                    </div>
+                    <div class="play_3_2_3"><span>8679次播放</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="tag">
+            <div class="tag_1">
+                <p class="tag_1_1">公益广告</p>
+                <p class="tag_1_2">每周五更新一集 会员版每周一更新一集</p>
+            </div>
+            <div class="tag_2">
+                <a class="tag_2_1">搞笑</a>
+                <a class="tag_2_1">喜剧</a>
+            </div>
+        </div>
+    </div>
+    <div class="intro">
+        <div class="intro_1"><p>简介</p></div>
+        <div class="intro_2"><p>
+            《欢乐喜剧人》是东方卫视打造的首档明星喜剧竞赛真人秀节目。节目中汇聚了中国当下最顶级的喜剧笑星，致力于呈现中国最顶级的喜剧盛宴。
+        </p></div>
+    </div>
+    <div class="recommend">
+        <div class="recommend_1"><p>你可能还喜欢这些节目</p></div>
+        <div class="recommend_2">
+            <ul>
+                <li>
+                    <img src="image/play/introduce.png">
+                    <p>欢乐喜剧人</p>
+                </li>
+                <li>
+                    <img src="image/play/introduce.png">
+                    <p>欢乐喜剧人</p>
+                </li>
+                <li>
+                    <img src="image/play/introduce.png">
+                    <p>欢乐喜剧人</p>
+                </li>
+                <li>
+                    <img src="image/play/introduce.png">
+                    <p>欢乐喜剧人</p>
+                </li>
+                <li>
+                    <img src="image/play/introduce.png">
+                    <p>欢乐喜剧人</p>
+                </li>
+            </ul>
+        </div>
+        <img src="image/play/haibao.png" width="375" height="500" class="recommend_3">
+    </div>
+
+</div>
+<div id="ts">
+    <div id="main">
+        <div id="comment">
+            <div id="comment-block1">
+                <div class="comment-user">
+                    <a href="####" target="_blank">登录</a>
+                    <span>|</span>
+                    <a href="####" target="_blank">注册</a>
+                </div>
+                <div class="form-textarea">
+                    <textarea data-maxlength="300" name="content" placeholder="快来说说想法吧～"
+                              style="height: 81px;"></textarea>
+                </div>
+                <div class="form-footer">
+                    <input type="button" value="发表评论"/>
+                </div>
+            </div>
+            <div id="comment-block2">
+                <div class="comment-tab">
+                    <ul class="comment-tab-left">
+                        <li style="list-style-type:none;">全部评论</li>
+                    </ul>
+                </div>
+                <div class="comments">
+                    <div class="comments-head">
+                        <div class="comments-head-right">
+                            <ul>
+                                <input class="btn1" type="button" value="上一页" onClick="">&nbsp;
+                                <input class="btn1" type="button" value="下一页" onClick="">
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="comments-body">
+                        <div class="comments-body-item">
+                            <div class="comments-body-item1">
+                                <div class="comments-user-avatar">
+                                    <a href="####" target="_blank"><img src="image/img/a.jpg" height="50" width="50"/></a>
+                                </div>
+                                <div class="comments-user-info">
+                                    <a href="####" target="_blank">
+                                        暮笙88800
+                                    </a>
+                                </div>
+                                <div class="comments-text">
+                                    <p>
+                                        难道就我觉得还不错？？？？[爱心]继续支持
+                                    </p>
+                                </div>
+                                <div>点赞 评论</div>
+                            </div>
+                        </div>
+                        <div class="comments-body-item">
+                            <div class="comments-body-item1">
+                                <div class="comments-user-avatar">
+                                    <a href="####" target="_blank"><img src="image/img/a.jpg" height="50" width="50"/></a>
+                                </div>
+                                <div class="comments-user-info">
+                                    <a href="####" target="_blank">
+                                        暮笙88800
+                                    </a>
+                                </div>
+                                <div class="comments-text">
+                                    <p>
+                                        难道就我觉得还不错？？？？[爱心]继续支持
+                                    </p>
+                                </div>
+                                <div>点赞 评论</div>
+                            </div>
+                        </div>
+                        <div class="comments-body-item">
+                            <div class="comments-body-item1">
+                                <div class="comments-user-avatar">
+                                    <a href="####" target="_blank"><img src="image/img/a.jpg" height="50" width="50"/></a>
+                                </div>
+                                <div class="comments-user-info">
+                                    <a href="####" target="_blank">
+                                        暮笙88800
+                                    </a>
+                                </div>
+                                <div class="comments-text">
+                                    <p>
+                                        难道就我觉得还不错？？？？[爱心]继续支持
+                                    </p>
+                                </div>
+                                <div>点赞 评论</div>
+                            </div>
+                        </div>
+                        <div class="comments-body-item">
+                            <div class="comments-body-item1">
+                                <div class="comments-user-avatar">
+                                    <a href="####" target="_blank"><img src="image/img/a.jpg" height="50" width="50"/></a>
+                                </div>
+                                <div class="comments-user-info">
+                                    <a href="####" target="_blank">
+                                        暮笙88800
+                                    </a>
+                                </div>
+                                <div class="comments-text">
+                                    <p>
+                                        难道就我觉得还不错？？？？[爱心]继续支持
+                                    </p>
+                                </div>
+                                <div>点赞 评论</div>
+                            </div>
+                        </div>
+                        <div class="comments-body-item">
+                            <div class="comments-body-item1">
+                                <div class="comments-user-avatar">
+                                    <a href="####" target="_blank"><img src="image/img/a.jpg" height="50" width="50"/></a>
+                                </div>
+                                <div class="comments-user-info">
+                                    <a href="####" target="_blank">
+                                        暮笙88800
+                                    </a>
+                                </div>
+                                <div class="comments-text">
+                                    <p>
+                                        难道就我觉得还不错？？？？[爱心]继续支持
+                                    </p>
+                                </div>
+                                <div>点赞 评论</div>
+                            </div>
+                        </div>
+                        <div class="comments-body-item">
+                            <div class="comments-body-item1">
+                                <div class="comments-user-avatar">
+                                    <a href="####" target="_blank"><img src="image/img/a.jpg" height="50" width="50"/></a>
+                                </div>
+                                <div class="comments-user-info">
+                                    <a href="####" target="_blank">
+                                        暮笙88800
+                                    </a>
+                                </div>
+                                <div class="comments-text">
+                                    <p>
+                                        难道就我觉得还不错？？？？[爱心]继续支持
+                                    </p>
+                                </div>
+                                <div>点赞 评论</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="main-right">
+            <div class="h">
+                <h2 style="font-size: 26px;margin-bottom: 20px;line-height: 26px;color: #333;">相关精彩视频</h2>
+            </div>
+            <div class="c">
+                <div class="item">
+                    <a class="cover" href="####" target="_blank">
+                        <img src="image/img/054102015B792A2F00000176D30D19D4.jpg"/>
+                    </a>
+                    <div class="title">
+                        <a href="####" target="_blank" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
+                    </div>
+                    <div class="status"><span>8679次播放</span></div>
+                </div>
+                <div class="item">
+                    <a class="cover" href="####" target="_blank">
+                        <img src="image/img/054102015B792A2F00000176D30D19D4.jpg"/>
+                    </a>
+                    <div class="title">
+                        <a href="####" target="_blank" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
+                    </div>
+                    <div class="status"><span>8679次播放</span></div>
+                </div>
+                <div class="item">
+                    <a class="cover" href="####" target="_blank">
+                        <img src="image/img/054102015B792A2F00000176D30D19D4.jpg"/>
+                    </a>
+                    <div class="title">
+                        <a href="####" target="_blank" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
+                    </div>
+                    <div class="status"><span>8679次播放</span></div>
+                </div>
+                <div class="item">
+                    <a class="cover" href="####" target="_blank">
+                        <img src="image/img/054102015B792A2F00000176D30D19D4.jpg"/>
+                    </a>
+                    <div class="title">
+                        <a href="####" target="_blank" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
+                    </div>
+                    <div class="status"><span>8679次播放</span></div>
+                </div>
+                <div class="item">
+                    <a class="cover" href="####" target="_blank">
+                        <img src="image/img/054102015B792A2F00000176D30D19D4.jpg"/>
+                    </a>
+                    <div class="title">
+                        <a href="####" target="_blank" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
+                    </div>
+                    <div class="status"><span>8679次播放</span></div>
+                </div>
+                <div class="item">
+                    <a class="cover" href="####" target="_blank">
+                        <img src="image/img/054102015B792A2F00000176D30D19D4.jpg"/>
+                    </a>
+                    <div class="title">
+                        <a href="####" target="_blank" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
+                    </div>
+                    <div class="status"><span>8679次播放</span></div>
+                </div>
+                <div class="item">
+                    <a class="cover" href="####" target="_blank">
+                        <img src="image/img/054102015B792A2F00000176D30D19D4.jpg"/>
+                    </a>
+                    <div class="title">
+                        <a href="####" target="_blank" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
+                    </div>
+                    <div class="status"><span>8679次播放</span></div>
+                </div>
+                <div class="item">
+                    <a class="cover" href="####" target="_blank">
+                        <img src="image/img/054102015B792A2F00000176D30D19D4.jpg"/>
+                    </a>
+                    <div class="title">
+                        <a href="####" target="_blank" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
+                    </div>
+                    <div class="status"><span>8679次播放</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="g-footer">
+        <dl class="g-w1">
+            <dd><a target="_blank" href="//mapp.youku.com/service/licence/">网络文化经营许可证 京网文[2014]0934-236号</a></dd>
+            <dd><a target="_blank" href="//mapp.youku.com/service/20130209">京卫网审[2013]第0209号 </a> <a target="_blank"
+                                                                                                     href="http://www.bj.cyberpolice.cn/index.htm"
+                                                                                                     rel="nofollow">网络110报警服务</a>
+            </dd>
+            <dd> 药品服务许可证(京)-经营-2015-0029</dd>
+            <dd><a target="_blank" href="//mapp.youku.com/service/gbdsjmzzjyxkz">节目制作经营许可证京字670号</a></dd>
+            <dd><a target="_blank" href="//mapp.youku.com/service/yingyezhizhao">营业执照</a>&nbsp;<a target="_blank"
+                                                                                                  href="//mapp.youku.com/service/chuban">出版物经营许可证</a>
+            </dd>
+        </dl>
+        <dl class="g-w2">
+            <dd>请使用者仔细阅读优酷<a target="_blank" href="//mapp.youku.com/service/agreement" class="mr0">《用户协议》</a>、<a
+                    target="_blank" href="//mapp.youku.com/service/flsm2" class="mr0">《隐私政策》</a>、
+            </dd>
+            <dd><a target="_blank" href="//mapp.youku.com/service/banquan" class="mr0">《版权声明》</a>、<a target="_blank"
+                                                                                                     href="//mapp.youku.com/service/piracy"
+                                                                                                     class="mr0">《反盗链声明》</a>、<a
+                    target="_blank" href="//mapp.youku.com/service/zhanghuzhuxiao" class="mr0">《账号注销协议》</a>和
+            </dd>
+            <dd><a target="_blank" href="//mapp.youku.com/service/agreementALL" class="mr0">历史协议文本</a></dd>
+            <dd>Copyright©2017 优酷 youku.com 版权所有</dd>
+            <dd><a target="_blank" href="//mapp.youku.com/service/0108283">信息网络传播视听节目许可证0108283号</a></dd>
+        </dl>
+        <dl class="g-w3">
+            <dd><a target="_blank" href="http://www.miibeian.gov.cn/" rel="nofollow">京ICP证060288号</a></dd>
+            <dd><a target="_blank" href="//mapp.youku.com/service/chubanwu" rel="nofollow">网络出版服务许可证</a></dd>
+            <dd><a target="_blank" href="http://www.bjjubao.org/" rel="nofollow">北京互联网举报中心</a></dd>
+            <dd><a target="_blank" href="http://www.bjwhzf.gov.cn/accuse.do" rel="nofollow">北京12318文化市场举报热线</a></dd>
+            <dd>不良信息举报电话: 4008100580</dd>
+        </dl>
+        <div class="g-authentication">
+            <a class="aut-1" target="_blank" href="http://www.hd315.gov.cn/beian/view.asp?bianhao=010202006082400023"
+               rel="nofollow">经营性网站<br>备案信息</a>
+            <a class="aut-2" target="_blank" href="http://www.itrust.org.cn/yz/pjwx.asp?wm=1786197705" rel="nofollow">中国互联网<br>诚信联盟</a>
+            <a class="aut-3" target="_blank" href="http://www.12377.cn/" rel="nofollow">中国互联网<br>举报中心</a>
+            <a class="aut-4" target="_blank" href="http://www.12377.cn/node_548446.htm" rel="nofollow">网络举报<br>APP下载</a>
+            <a class="aut-5" target="_blank"
+               href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11000002000017"
+               rel="nofollow">京公网安备<br>11000002000017</a>
+            <a class="aut-6" target="_blank"
+               href="http://sq.ccm.gov.cn/ccnt/sczr/service/business/emark/toDetail/0D76560AE65141FF9FEFE3481D205C50"
+               rel="nofollow">网络文化<br>经营单位</a>
+            <a class="aut-7" target="_blank" href="http://www.12377.cn/" rel="nofollow">暴恐音视频<br>举报专区</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
