@@ -9,5 +9,8 @@
         <module name="lianxi" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="lianxi" target="1.7" />
+    </bytecodeTargetLevel>
   </component>
 </project>
