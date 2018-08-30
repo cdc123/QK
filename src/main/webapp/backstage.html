@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="CSS/backstage.css" type="text/css">
+    <link rel="stylesheet" href="layui/css/layui.css" type="text/css">
+    <link rel="stylesheet" href="CSS/base2.css" type="text/css">
+    <script src="JS/jquery-3.3.1.js"></script>
+    <script src="layui/layui.js"></script>
+    <style type="text/css">
+    .tu_1:hover{
+        color: goldenrod;
+    }
+    </style>
+    <script>
+        layui.use(['laypage', 'layer'], function() {
+            //隐藏，显示
+            var laypage = layui.laypage;
+            var $ = layui.jquery, layer = layui.layer;
+            $(".button1_1").on('click',function () {
+                layer.open({
+                    type: 1,
+                    title: false,
+                    closeBtn: 0,
+                    shadeClose: true,
+                    skin: 'yourclass',
+                    content: '自定义HTML内容'
+                });
+            });
+            $(".button1_2").on('click',function () {
+                layer.msg('确认删除？', {
+                    time: 0 //不自动关闭
+                    ,btn: ['是', '否']
+                    ,yes: function(index){
+                        layer.close(index);
+                        layer.msg('删除成功', {
+                            icon: 6
+                        });
+                    }
+                });
+            });
+            $("#tb_1").on('click','.button2_1',function () {
+                layer.open({
+                    type: 1,
+                    title: false,
+                    closeBtn: 0,
+                    shadeClose: true,
+                    skin: 'yourclass',
+                    content: '自定义HTML内容'
+                });
+            });
+            $("#tb_1").on('click',".button2_2",function () {
+                layer.msg('确认删除？', {
+                    time: 0 //不自动关闭
+                    ,btn: ['是', '否']
+                    ,yes: function(index){
+                        layer.close(index);
+                        layer.msg('删除成功', {
+                            icon: 6
+                        });
+                    }
+                });
+            });
+            $(".tu_1").on('click',function () {
+                layer.open({
+                    title: 0,
+                    closeBtn:1,
+                    btn:0,
+                    skin: 'yourclass'
+                    ,content: '可以填写任意的layer代码'
+                });
+            });
+            //上一页，下一页
+            laypage.render({
+                elem: 'demo6_1'
+                , count: 50
+                , layout: ['prev', 'next']
+                , jump: function (obj, first) {
+                    if (!first) {
+                        layer.msg('第 ' + obj.curr + ' 页');
+                    }
+                }
+            });
+            laypage.render({
+                elem: 'demo6_2'
+                , count: 50
+                , layout: ['prev', 'next']
+                , jump: function (obj, first) {
+                    if (!first) {
+                        layer.msg('第 ' + obj.curr + ' 页');
+                    }
+                }
+            });
+            laypage.render({
+                elem: 'demo6_3'
+                , count: 50
+                , layout: ['prev', 'next']
+                , jump: function (obj, first) {
+                    if (!first) {
+                        layer.msg('第 ' + obj.curr + ' 页');
+                    }
+                }
+            });
+            laypage.render({
+                elem: 'demo6_4'
+                , count: 50
+                , layout: ['prev', 'next']
+                , jump: function (obj, first) {
+                    if (!first) {
+                        layer.msg('第 ' + obj.curr + ' 页');
+                    }
+                }
+            });
+        });
+        $(function () {
+            for(var z=2;z<7;z++){
+                 $(".body" + z).hide();
+            }
+            $(".li_1").click(function () {
+                $(".body2").hide();
+                $(".body3").hide();
+                $(".body4").hide();
+                $(".body5").hide();
+                $(".body1").show();
+            });
+            $(".li_2").click(function () {
+                $(".body1").hide();
+                $(".body3").hide();
+                $(".body4").hide();
+                $(".body5").hide();
+                $(".body2").show();
+            });
+            $(".li_3").click(function () {
+                $(".body1").hide();
+                $(".body2").hide();
+                $(".body4").hide();
+                $(".body5").hide();
+               $(".body3").show();
+            });
+            $(".li_4").click(function () {
+                $(".body1").hide();
+                $(".body2").hide();
+                $(".body3").hide();
+                $(".body5").hide();
+                $(".body4").show();
+            });
+                   show();
+        });
+        function show(){
+            $.ajax({
+                url: "/UserServlet",   //要提交的URL路径
+                type: "post",                          //发送请求的方式
+                dataType: "json",
+                //指定传输的数据格式
+                success: function (list) {//请求成功后要执行的代码
+                    console.log(list);
+                    for (var i = 0; i < list.length; i++) {
+                         var $node = $('<tr><td lay-data="{width:120}">'+list[i].u_id+'</td> <td lay-data="{width:90}">'+list[i].u_name+'</td> <td lay-data="{width:90}">'+list[i].u_image+'</td> <td lay-data="{width:90}">'+list[i].u_sex+'</td> <td lay-data="{width:120}">'+list[i].u_introduce+'</td> <td lay-data="{ width:120}">'+list[i].u_address+'</td> <td lay-data="{width:90}">'+list[i].u_birthday+'</td> <td lay-data="{width:110}">'+list[i].u_phone+'</td> <td lay-data="{width:90}">'+list[i].u_password+'</td> <td lay-data="{width:90}">'+list[i].u_power+'</td> <td lay-data="{width:90}"><button class="button2_1">修改</button></td> <td lay-data="{width:90}"><button class="button2_2">删除</button></td></tr> ');
+                        $(".tr_1").append($node);
+                        // count=parseInt(list[list.length-1]);
+                        // console.log(count);
+                    }
+                },
+            });
+        }
+        //弹出框
+    </script>
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div><img src="image/img2/logo.png" width="180px" height="60px"></div>
+    <div class="layui-logo" style="position: absolute;left: 380px;width: 500px"><span style="font-size: 30px;letter-spacing:15px; font-family: 华文楷体; color: gold">QK后台管理</span></div>
+         <!--头部区域（可配合layui已有的水平导航）-->
+        <!--<ul class="layui-nav layui-layout-left">-->
+            <!--<li class="layui-nav-item"><a href="">控制台</a></li>-->
+            <!--<li class="layui-nav-item"><a href="">商品管理</a></li>-->
+            <!--<li class="layui-nav-item"><a href="">用户</a></li>-->
+            <!--<li class="layui-nav-item">-->
+                <!--<a href="javascript:;">其它系统</a>-->
+                <!--<dl class="layui-nav-child">-->
+                    <!--<dd><a href="">邮件管理</a></dd>-->
+                    <!--<dd><a href="">消息管理</a></dd>-->
+                    <!--<dd><a href="">授权管理</a></dd>-->
+                <!--</dl>-->
+            <!--</li>-->
+        <!--</ul>-->
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                  <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    管理员
+            </li>
+            <li class="layui-nav-item"><a href="#">退出</a></li>
+        </ul>
+    </div>
+    <div class="layui-side layui-bg-black" style="position: absolute;">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+                <<li class="layui-nav-item li_1"><a href="#">视频管理</a></li>
+                <li class="layui-nav-item li_2"><a href="#">用户管理</a></li>
+                <li class="layui-nav-item li_3"><a href="#">上传视频管理</a></li>
+                <li class="layui-nav-item li_4"><a href="#">留言管理</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="layui-body body1">
+        <!-- 内容主体区域 -->
+        <div style="margin-bottom: 5px;">
+            <ins class="adsbygoogle" style="display:inline-block;width:800px;height:60px" data-ad-client="ca-pub-6111334333458862" data-ad-slot="3820120620">
+
+                <div style="position: absolute;top: 25px;left: 350px;"><input type="text" width="80" height="30"><input type="button" value="搜索"></div>
+            </ins>
+        </div>
+        <!--<div class="layui-btn-group demoTable" style="padding-left: 40px;">-->
+        <!--<button class="layui-btn" data-type="getCheckData">获取选中行数据</button>-->
+        <!--<button class="layui-btn" data-type="getCheckLength">获取选中数目</button>-->
+        <!--<button class="layui-btn" data-type="isAll">验证是否全选</button>-->
+        <!--</div>-->
+
+        <div class="layui-col-md9" style="position: absolute; top: 90px;left: 50px">
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th lay-data="{width:120}">视频ID</th>
+                    <th lay-data="{width:120}">视频名称</th>
+                    <th lay-data="{width:90}">视频简介</th>
+                    <th lay-data="{width:120}">视频图片</th>
+                    <th lay-data="{width:90}">视频</th>
+
+                    <th lay-data="{ width:90}">播放量</th>
+                    <th lay-data="{width:100}">评论数</th>
+                    <th lay-data="{width:90}">操作</th>
+                    <th lay-data="{width:90}">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td lay-data="{width:90}">1</td>
+                    <td lay-data="{width:90}">mm</td>
+                    <td lay-data="{width:90}"><div style="width:60px;white-space:nowrap; overflow:hidden;">s删繁就简军军军军军军军军军军军军军军军</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="layui-icon layui-icon-right tu_1"></i></td>
+                    <td lay-data="{width:120}">水电费v</td>
+                    <td lay-data="{width:90}"><img src="image/img2/select.PNG" width="100px"></td>
+                     <td lay-data="{ width:90}">1997.2.3</td>
+                    <td lay-data="{width:100}">15159825532</td>
+                    <td lay-data="{width:90}"><button class="button1_1">修改</button></td>
+                    <td lay-data="{width:90}"><button class="button1_2">删除</button></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="demo6_1" style="position: absolute;top: 400px;left: 50px;"></div>
+    </div>
+    <div class="layui-body body2">
+        <!-- 内容主体区域 -->
+        <div style="margin-bottom: 5px;">
+            <ins class="adsbygoogle" style="display:inline-block;width:800px;height:60px" data-ad-client="ca-pub-6111334333458862" data-ad-slot="3820120620">
+
+                <div style="position: absolute;top: 25px;left: 350px;"><input type="text" width="80" height="30"><input type="button" value="搜索"></div>
+            </ins>
+        </div>
+        <!--<div class="layui-btn-group demoTable" style="padding-left: 40px;">-->
+        <!--<button class="layui-btn" data-type="getCheckData">获取选中行数据</button>-->
+        <!--<button class="layui-btn" data-type="getCheckLength">获取选中数目</button>-->
+        <!--<button class="layui-btn" data-type="isAll">验证是否全选</button>-->
+        <!--</div>-->
+
+        <div class="layui-col-md10" style="position: absolute; top: 90px;left: 50px">
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <td lay-data="{width:120}">用户</td>
+                    <td lay-data="{width:90}">昵称</td>
+                    <td lay-data="{width:90}">头像</td>
+                    <td lay-data="{width:90}">性别</td>
+                    <td lay-data="{width:120}">个人简介</td>
+
+                    <td lay-data="{ width:120}">用户地址</td>
+                    <td lay-data="{width:90}">生日</td>
+                    <td lay-data="{width:110}">手机号</td>
+                    <td lay-data="{width:90}">密码</td>
+                    <td lay-data="{width:90}">权限</td>
+                    <td lay-data="{width:90}">操作</td>
+                    <td lay-data="{width:90}">操作</td>
+                </tr>
+                </thead>
+                <tbody class="tr_1" id="tb_1">
+                <!--<tr>-->
+                    <!--<td lay-data="{width:120}">1</td>-->
+                    <!--<td lay-data="{width:90}">mm</td>-->
+                    <!--<td lay-data="{width:90}">女</td>-->
+                    <!--<td lay-data="{width:90}">水电费v</td>-->
+                    <!--<td lay-data="{width:120}">头像</td>-->
+
+                    <!--<td lay-data="{ width:120}">1997.2.3</td>-->
+                    <!--<td lay-data="{width:90}">15159825532</td>-->
+                    <!--<td lay-data="{width:110}">123455</td>-->
+                    <!--<td lay-data="{width:90}">vip</td>-->
+                    <!--<td lay-data="{width:90}">vip</td>-->
+                    <!--<td lay-data="{width:90}"><button class="button2_1">修改</button></td>-->
+                    <!--<td lay-data="{width:90}"><button class="button2_2">删除</button></td>-->
+                <!--</tr>-->
+                </tbody>
+            </table>
+        </div>
+        <div id="demo6_2" style="position:absolute; top:400px;left: 50px;"></div>
+    </div>
+    <div class="layui-body body3">
+        <!-- 内容主体区域 -->
+        <div style="margin-bottom: 5px;">
+            <ins class="adsbygoogle" style="display:inline-block;width:800px;height:60px" data-ad-client="ca-pub-6111334333458862" data-ad-slot="3820120620">
+
+                <div style="position: absolute;top: 25px;left: 350px;"><input type="text" width="80" height="30"><input type="button" value="搜索"></div>
+            </ins>
+        </div>
+        <!--<div class="layui-btn-group demoTable" style="padding-left: 40px;">-->
+        <!--<button class="layui-btn" data-type="getCheckData">获取选中行数据</button>-->
+        <!--<button class="layui-btn" data-type="getCheckLength">获取选中数目</button>-->
+        <!--<button class="layui-btn" data-type="isAll">验证是否全选</button>-->
+        <!--</div>-->
+
+        <div class="layui-col-md9" style="position: absolute; top: 90px;left: 50px">
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th lay-data="{width:140}">上传视频ID</th>
+                    <th lay-data="{width:100}">用户ID</th>
+                    <th lay-data="{width:140}">上传视频名称</th>
+                    <th lay-data="{width:140}">上传的视频</th>
+                    <th lay-data="{width:120}">上传时间</th>
+                    <th lay-data="{ width:120}">审核状态</th>
+                    <th lay-data="{width:90}">操作</th>
+                    <th lay-data="{width:90}">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td lay-data="{width:90}">1</td>
+                    <td lay-data="{width:90}">mm</td>
+                    <td lay-data="{width:90}">女</td>
+                    <td lay-data="{width:120}">水电费v</td>
+                    <td lay-data="{width:90}"><img src="image/img2/select.PNG" width="100px"></td>
+
+                    <td lay-data="{ width:90}">1997.2.3</td>
+                    <td lay-data="{width:90}"><input type="button" value="修改" style="width: 35px;height: 25px;"></td>
+                    <td lay-data="{width:90}"><input type="button" value="删除" style="width: 35px;height: 25px;"></td>
+                </tr>
+                </tbody>
+            </table>
+            <i class="layui-icon layui-icon-add-circle-fine" style="position: absolute;top:1px;left:880px;"></i>
+        </div>
+        <div id="demo6_3" style="position:absolute; top:400px;left: 50px;"></div>
+    </div>
+    <div class="layui-body body4">
+        <!-- 内容主体区域 -->
+        <div style="margin-bottom: 5px;">
+            <ins class="adsbygoogle" style="display:inline-block;width:800px;height:60px" data-ad-client="ca-pub-6111334333458862" data-ad-slot="3820120620">
+
+                <div style="position: absolute;top: 25px;left: 350px;"><input type="text" width="80" height="30"><input type="button" value="搜索"></div>
+            </ins>
+        </div>
+        <!--<div class="layui-btn-group demoTable" style="padding-left: 40px;">-->
+        <!--<button class="layui-btn" data-type="getCheckData">获取选中行数据</button>-->
+        <!--<button class="layui-btn" data-type="getCheckLength">获取选中数目</button>-->
+        <!--<button class="layui-btn" data-type="isAll">验证是否全选</button>-->
+        <!--</div>-->
+
+        <div class="layui-col-md9" style="position: absolute; top: 90px;left: 50px">
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th lay-data="{width:90}">评论ID</th>
+                    <th lay-data="{width:90}">视频ID</th>
+                    <th lay-data="{width:90}">用户ID</th>
+                    <th lay-data="{width:120}">评论时间</th>
+                    <th lay-data="{width:90}">评论内容</th>
+
+                    <th lay-data="{ width:90}">点赞数</th>
+                    <th lay-data="{width:100}">操作</th>
+                    <th lay-data="{width:90}">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td lay-data="{width:90}">1</td>
+                    <td lay-data="{width:90}">mm</td>
+                    <td lay-data="{width:90}">女</td>
+                    <td lay-data="{width:120}">水电费v</td>
+                    <td lay-data="{width:90}"><img src="image/img2/select.PNG" width="100px"></td>
+
+                    <td lay-data="{ width:90}">1997.2.3</td>
+                    <td lay-data="{width:90}"><input type="button" value="查找" style="width: 35px;height: 25px;"></td>
+                    <td lay-data="{width:90}"><input type="button" value="删除" style="width: 35px;height: 25px;"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="demo6_4" style="position:absolute; top:400px;left: 50px;"></div>
+    </div>
+</div>
+<!--<div class="layui-footer">-->
+<!--&lt;!&ndash; 底部固定区域 &ndash;&gt;-->
+<!--111-->
+<!--</div>-->
+</body>
+</html>
