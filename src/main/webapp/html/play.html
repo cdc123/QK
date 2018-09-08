@@ -3,39 +3,526 @@
 <head>
     <meta charset="UTF-8">
     <title>Play</title>
-    <link rel="stylesheet" href="CSS/base.css" type="text/css">
-    <link rel="stylesheet" href="CSS/C_CSS.css" type="text/css">
-    <link rel="stylesheet" href="CSS/ts_StyleSheet.css">
-    <script src="JS/jquery-3.3.1.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="../css/base.css" type="text/css">
+    <link rel="stylesheet" href="../css/ts_StyleSheet.css">
+    <script src="../js/jquery-3.3.1.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="../css/CDM_base.css">
+    <link rel="stylesheet" href="../css/DPlayer.min.css">
+    <link rel="stylesheet" href="../css/C_DM.css">
+    <script src="../layui/layui.all.js"></script>
+    <script src="../js/wangEditor.min.js"></script>
+    <link rel="stylesheet" href="../css/C_CSS.css" type="text/css">
+    <script>
+        $(function () {
+            var E = window.wangEditor;
+            //这里的id为<div id="editor">中的id.
+            var editor = new E('#editor');
+            // 配置服务器端地址,也就是servlet的请求路径，不带项目路径，前面没有/
+            //editor.customConfig.uploadImgServer = 'uploadFile';
+            editor.customConfig.menus = [
+                'head',  // 标题
+                'bold',  // 粗体
+                'fontSize',  // 字号
+                'fontName',  // 字体
+                'italic',  // 斜体
+                //'underline',  // 下划线
+                //'strikeThrough',  // 删除线
+                'foreColor',  // 文字颜色
+                'backColor',  // 背景颜色
+                'link',  // 插入链接
+                'list',  // 列表
+                'justify',  // 对齐方式
+                'quote',  // 引用
+                'emoticon',  // 表情
+                'image',  // 插入图片
+                //'table',  // 表格
+                //'video',  // 插入视频
+                //'code',  // 插入代码
+                'undo',  // 撤销
+                'redo'  // 重复
+            ]
+            editor.customConfig.onchange = function (html) {
+                // 监控变化，同步更新到 textarea
+                $("#show_box").html(html);
+                $("textarea").val(html);
+            }
+            //创建编辑器
+            editor.create();
+
+        })
+    </script>
     <script type="text/javascript">
         $(function () {
-            //弹幕
-            $(".play_2_right_2").click(function () {
-                var $ch = $(this).children();
-                if ($ch.attr("class") == "play_2_right_2_open") {
-                    $ch.attr("class", "play_2_right_2_close");
-                } else {
-                    $ch.attr("class", "play_2_right_2_open");
+            //ts
+            var pagenumber = 1;
+            var rsCount = 0;
+            //dc
+            var $video = null;
+            var $cur = 0;
+            var $dur = 1;
+            var $v_id = -1;
+            var $u_id = -1;
+            //获取session信息
+            $.ajax({
+                async: false,
+                url: "/CdcGetsessionServlet",
+                data: {"videoGetsession": "videosession"},
+                type: "post",
+                dataType: "json",
+                success: function (result) {
+                    //对象转数字
+                    $v_id = Number(result);
+                    //第二层ajax取user_id_session
+                    $.ajax({
+                        async: false,
+                        url: "/CdcGetsession1Servlet",
+                        // data: {"userGetsession": "sessionListForUser"},
+                        type: "post",
+                        dataType: "json",
+                        success: function (result) {
+                            $u_id = Number(result[0].user_id);
+                            //嵌套ajax，调整ajax执行顺序
+                            show();
+                        }, error: function () {
+                            alert("kkkk");
+                        }
+                    });
+                }, error: function () {
+                    alert("展示数据错误！！");
+                }
+            });
+
+            function show() {
+//dc
+                //历史
+                //以下是历史部分
+                /*为历史纪录导向设置事件委托*/
+                $("#forHistory").on("click", "a", function (event) {
+                    var target = $(event.target);
+                    var videoName = target.text();
+                    $.ajax({
+                        type: "post",
+                        url: "/Wcg_SearchVideo?flag=getVideoByName",
+                        data: {"videoName": videoName},
+                        dataType: "json",
+                        success: function (res) {
+                            location.href = "play.html";
+                        }
+                    });
+                })
+                /*查询显示个人观看历史*/
+                $.ajax({
+                    type: "post",
+                    url: "/Wcg_SearchHistory",
+                    dataType: "json",
+                    async: false,
+                    success: function (result) {
+                        /*最终的$node*/
+                        var $history;
+                        /*设置判断条件*/
+                        var yearfirst = 0;
+                        var monthfirst = 0;
+                        var datefirst = 0;
+                        var hourfirst = 0;
+                        var minutefirst = 0;
+                        /*取出每一条历史记录*/
+                        $.each(result, function (n, value) {
+                            /*取出video_id*/
+                            var videoId = value.video_id;
+                            var videoName = "";
+                            /*根据videoId查出视频名称,存入videoName*/
+                            $.ajax({
+                                type: "post",
+                                url: "/Wcg_SearchVideo?flag=getVideoById",
+                                data: {"videoId": videoId},
+                                dataType: "json",
+                                async: false,
+                                success: function (res) {
+                                    $.each(res, function (i, val) {
+                                        videoName = val.video_name;
+                                    });
+                                }
+                            });
+                            /*取出历史时间*/
+                            var historyTime = new Date(value.history_time);
+                            /*取出年份*/
+                            var year = historyTime.getFullYear() + "年";
+                            /*取出月，日*/
+                            var month_date = historyTime.getMonth() + "月" + historyTime.getDate() + "日";
+                            /*取出时，分*/
+                            var hour_minute = historyTime.getHours() + "时" + historyTime.getMinutes() + "分";
+                            /*取出数据计算出百分比*/
+                            var historyHolder = Number(value.history_holder);
+                            var historyTotal = Number(value.history_total);
+                            var percent = Number((historyHolder / historyTotal) * 100).toFixed() + "%";
+                            /*组装$node*/
+                            var y = "<div class='year'>" + year + "</div>";
+                            var m = "<div class='month_day'>" + month_date + "</div>";
+                            var h = "<div class='sItem'><div class='hour_minute'>" + hour_minute + "</div><div class='context'><a id='play' href='#videoPlay(本视频播放页)'>" + videoName + "</a></div><div class='rate'>看到" + percent + "</div></div>";
+                            if (Number(historyTime.getFullYear()) > yearfirst) {
+                                $history = $(y + m + h);
+                                $("#forHistory").append($history);
+                                yearfirst = Number(historyTime.getFullYear());
+                                monthfirst = Number(historyTime.getMonth());
+                                datefirst = Number(historyTime.getDate());
+                                hourfirst = Number(historyTime.getHours());
+                                minutefirst = Number(historyTime.getMinutes());
+                            } else {
+                                if ((Number(historyTime.getMonth()) > monthfirst) || (Number(historyTime.getMonth()) == monthfirst && Number(historyTime.getDate()) > datefirst)) {
+                                    $history = $(m + h);
+                                    $("#forHistory").children().eq(0).after($history);
+                                    monthfirst = Number(historyTime.getMonth());
+                                    datefirst = Number(historyTime.getDate());
+                                    hourfirst = Number(historyTime.getHours());
+                                    minutefirst = Number(historyTime.getMinutes());
+                                } else {
+                                    if ((historyTime.getHours() > hourfirst) || ((historyTime.getHours() == hourfirst) && historyTime.getMinutes() > minutefirst)) {
+                                        $history = $(h);
+                                        $("#forHistory").children().eq(1).after($history);
+                                        hourfirst = Number(historyTime.getHours());
+                                        minutefirst = Number(historyTime.getMinutes());
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+                /*隐藏历史纪录*/
+                $("#forHistory").hide();
+                /*历史弹出列表,隐藏*/
+                $(".top_4_3").mouseenter(function () {
+                    $("#forHistory").show(100);
+                });
+                $("#forHistory").mouseleave(function () {
+                    $("#forHistory").hide(200);
+                });
+                //以上是历史部分
+                //获取头像
+                $.ajax({
+                    async: false,
+                    type: "post",
+                    url: "/Wcg_PersonalInfoChange?flag=getUserById",
+                    dataType: "json",
+                    success: function (result) {
+                        $.each(result, function (n, value) {
+                            if (value.user_image != null && value.user_image != "") {
+                                /*设置初始头像*/
+                                $(".login").children().children().attr("src", value.user_image);
+                            }
+                        });
+                        $("#tou").attr("onclick", "");
+                    }
+                });
+                //获取video信息
+                $.ajax({
+                    async: false,
+                    url: "/CdcPlayServlet",
+                    data: {"video_id": $v_id},
+                    type: "post",
+                    dataType: "json",
+                    success: function (result) {
+                        $video = result[0].video_video;
+                        $(".play_3_1_1").text(result[0].video_name);
+                        $(".tag_1_1").text(result[0].video_name);
+                        $(".intro_2").children().text(result[0].video_introduce);
+                        var dp = new DPlayer({
+                            element: document.getElementById('player1'),
+                            autoplay: true,
+                            video: {
+                                url: $video,
+                                // pic: '../css/danmu.jpg'
+                            },
+                            danmaku: {
+                                id: 'demo',
+                                api: 'https://api.prprpr.me/dplayer/',
+                                addition: ['barrage.html']
+                            }
+                        });
+                        //嵌套ajax
+                        $.ajax({
+                            async: false,
+                            url: "/CdcOutXuboServlet",
+                            data: {"video_id": $v_id, "user_id": $u_id},
+                            type: "post",
+                            dataType: "json",
+                            success: function (result) {
+                                //时间跳转
+                                dp.seek(result[0].history_holder);
+                            }, error: function () {
+                                // alert("展示数据错误！！");
+                            }
+                        });
+                        setInterval(miao, 1000);
+
+                        function miao() {
+                            //获取当前播放时间
+                            $cur = dp.video.currentTime;
+                            //获取视频总时间
+                            $dur = dp.video.duration;
+                        };
+                    }, error: function () {
+                        // alert("展示数据错误！！");
+                    }
+                });
+                //显示收藏
+                $.ajax({
+                    async: false,
+                    url: "/CdcShowFavouriteServlet",
+                    data: {"video_id": $v_id, "user_id": $u_id},
+                    type: "post",
+                    dataType: "json",
+                    success: function (result) {
+                        if (result == 0) {
+                            $(".top_4_2").children().attr("class", "handle1");
+                            $(".top_4_2").children().children().children().eq(1).text('"已收藏"');
+                        }
+                    }, error: function () {
+                        alert("展示数据错误！！");
+                    }
+                });
+                //点击收藏
+                $(".top_4_2").children().click(function () {
+                    $.ajax({
+                        url: "/CdcInFavouriteServlet",
+                        data: {"video_id": $v_id, "user_id": $u_id},
+                        type: "post",
+                        dataType: "json",
+                        success: function (result) {
+                            if (result) {
+                                $(".top_4_2").children().attr("class", "handle1");
+                                $(".top_4_2").children().children().children().eq(1).text('"已收藏"');
+                            }
+                        }, error: function () {
+                            alert("展示数据错误！！");
+                        }
+                    });
+                });
+                //动态更新历史观看时间
+                setInterval(InXubo, 1000);
+
+                function InXubo() {
+                    $.ajax({
+                        url: "/CdcInXuboServlet",
+                        data: {"history_holder": $cur, "history_total": $dur, "video_id": $v_id, "user_id": $u_id},
+                        type: "post",
+                        dataType: "json",
+                        success: function (result) {
+                        }, error: function () {
+                            // alert("展示数据错误！！");
+                        }
+                    });
                 }
 
-            });
+                // $(".top_3_1").children().eq(1).click(function () {
+                // });
+                //获取相关推荐信息
+                //中间推荐
+                $.ajax({
+                    url: "/CdcShowRecommendServlet",
+                    data: {"video_id": $v_id},
+                    type: "post",
+                    dataType: "json",
+                    success: function (result) {
+                        for (var i = 0; i < $(".recommend_2_1").length; i++) {
+                            $(".recommend_2_2").eq(i).attr("src", result[i].video_image);
+                            $(".recommend_2_3").eq(i).text(result[i].video_name);
+                            $(".recommend_2_1").eq(i).children().attr("id", result[i].video_id);
+                        }
+                    }, error: function () {
+                        // alert("展示数据错误！！");
+                    }
+                });
+                //中间推荐传session
+                for (var i = 0; i < $(".recommend_2_1").length; i++) {
+                    //立即调用的函数表达式（IIFE）
+                    (function (i) {
+                        $(".recommend_2_1").eq(i).children().click(function () {
+                            var $vid_session = $(".recommend_2_1").eq(i).children().attr("id");
+                            $.ajax({
+                                url: "/CdcMidSetsessionServlet",
+                                data: {"video_id": $vid_session},
+                                type: "post",
+                                dataType: "json",
+                                success: function (result) {
+                                    // alert(2);
+                                    location.href = "play.html";
+                                }, error: function () {
+                                    // alert("展示数据错误！！");
+                                }
+                            });
+                        });
+                    })(i);
+                };
+                //右推荐
+                $.ajax({
+                    url: "/CdcShowRecommendServlet",
+                    data: {"video_id": $v_id},
+                    type: "post",
+                    dataType: "json",
+                    success: function (result) {
+                        for (var j = 0; j < 4; j++) {
+                            $(".play_3_2_1").eq(j).children().attr("src", result[j].video_image);
+                            $(".play_3_2_1").eq(j).attr("id", result[j].video_id);
+                            $(".play_3_2_2").eq(j).children().text(result[j].video_name);
+                            $(".play_3_2_3").eq(j).children().text(result[j].video_playtimes + "次播放");
+                        }
+                    }, error: function () {
+                        // alert("展示数据错误！！");
+                    }
+                });
+                //右推荐传session
+                for (var i = 0; i < 4; i++) {
+                    //立即调用的函数表达式（IIFE）
+                    (function (i) {
+                        $(".play_3_2_1").eq(i).click(function () {
+                            var $vid_session = $(".play_3_2_1").eq(i).attr("id");
+                            $.ajax({
+                                url: "/CdcMidSetsessionServlet",
+                                data: {"video_id": $vid_session},
+                                type: "post",
+                                dataType: "json",
+                                success: function (result) {
+                                    // alert(2);
+                                    location.href = "play.html";
+                                }, error: function () {
+                                    // alert("展示数据错误！！");
+                                }
+                            });
+                        });
+                    })(i);
+                };
+                // $(".play_3_2_2").eq(0).children().click(function () {
+                //     alert(1);
+                // })
+                //ts
+                function load() {
+                    $.ajax({
+                        async: false,
+                        url: "/ShowMessageServlet",
+                        type: "post",
+                        data: {"pagenumber": pagenumber},
+                        dataType: "json",
+                        success: function (jsonArray) {
+                            var $u1_id;
+                            for (var i = 0; i < (jsonArray.length - 1); i++) {
+                                $(".comments-text").eq(i).text(jsonArray[i].msg_text);
+                                $(".comment-time").eq(i).text(jsonArray[i].msg_date);
+                                // alert(jsonArray[i].user_id);
+                                $u1_id = jsonArray[i].user_id;
+                                //获取头像
+                                // 立即调用的函数表达式（IIFE）
+                                (function (i) {
+                                    $.ajax({
+                                        url: "/CdcGetphotoServlet",
+                                        data: {"user_id": $u1_id},
+                                        type: "post",
+                                        dataType: "json",
+                                        success: function (result) {
+                                            //判断用户是否命名
+                                            if(result[0].user_name !== null && result[0].user_name !== undefined && result[0].user_name !== ""){
+                                                $(".comments-user-info").children().eq(i).text("用户：" + result[0].user_name + "");
+                                            }else {
+                                                $(".comments-user-info").children().eq(i).text("用户：未命名用户");
+                                            }
+                                            $(".comments-user-avatar").children().children().eq(i).attr("src",result[0].user_image);
+                                        }, error: function () {
+                                            // alert("展示数据错误！！");
+                                        }
+                                    });
+                                })(i);
+                            }
+                            rsCount = jsonArray[jsonArray.length - 1];
+                        },
+                        error: function () {
+                            alert("第一页展示数据错误！！");
+                        },
+                    });
+                }
+
+                $.ajax({
+                    async: false,
+                    url: "/ShowVideoServlet",
+                    data: {"video_id": $v_id},
+                    type: "post",
+                    dataType: "json",
+                    success: function (list) {
+                        for (var i = 0; i < 8; i++) {
+                            var $node = $('<div class="item" style="width: 330px;height: 90px;float: left; margin-left: 10px;margin-right: 10px;overflow:hidden;"><a class="cover" href="####" target="_blank"><img src="' + list[i].video_image + '" style="width:180px;height:200px;overflow: hidden"></a> <div class="title"> <a href="####" target="_blank" title="' + list[i].video_introduce + '">' + list[i].video_name + '</a></div><div class="status" style="display:block;float:right;margin-right:10px;margin-top: 70px;"><span>' + list[i].video_playtimes + '次播放</span></div></div>');
+                            $(".c").append($node);
+                            // count=parseInt(list[list.length-1]);
+                            // console.log(count);
+                        }
+                    },
+                    error: function () {
+                        alert("第一页展示数据错误！！");
+                    }
+                });
+                load();
+                $("input[value='下一页']").click(function () {
+                    var count = Math.ceil(rsCount / 6);
+                    if (pagenumber < count) {
+                        pagenumber++;
+                    } else {
+                        pagenumber = count;
+                    }
+                    load();
+                })
+                $("input[value='上一页']").click(function () {
+                    // var maxPage =Math.ceil(rsCount/pageSize);
+                    // num=num<maxPage ? ++num:maxPage;
+                    if (pagenumber <= 1) {
+                        pagenumber = 1;
+                    } else {
+                        pagenumber--;
+                    }
+                    load();
+                })
+                //分页数据
+                // changePage(pagenumber,pagesize);
+                //点发布，插入一条数据
+                $("#buttom_sub").click(function () {
+                    $.ajax({
+                        async: false,
+                        url: "/InsertMessageServlet",
+                        type: "post",
+                        data: {
+                            "msg_text": $("#editor").children().eq(1).children().text(),
+                            "video_id": $v_id,
+                            "user_id": $u_id
+                        },
+                        dataType: "json",
+                        success: function (result) {
+                            // alert("成功")
+                            layer.msg('评论成功！');
+                            load();
+                        },
+                        error: function () {
+                            alert("评论错误！！");
+                        },
+                        // complete: function () {
+                        //     $(".comments-text").load("http://localhost:8080/play.html .comments-text");
+                        // }
+                    });
+                });
+            }
         });
     </script>
 </head>
 <body>
 <div class="dc">
+
     <div class="first">
         <div class="top">
             <div class="top_1">
-                <img src="image/play/logo1.png" width="100">
+                <img src="../image/play/logo1.png" width="100">
             </div>
             <div class="top_2">
                 <div class="top_2_1">
                     <ul class="top_2_2">
-                        <li><a href="#">首页</a></li>
-                        <li><a href="#">剧集</a></li>
-                        <li><a href="#">电影</a></li>
-                        <li><a href="#">自频道</a></li>
+                        <li><a href="homepage.html">首页</a></li>
+                        <li><a href="homepage.html#tv">剧集</a></li>
+                        <li><a href="homepage.html#movie">电影</a></li>
+                        <li><a href="homepage.html#upV">自频道</a></li>
                     </ul>
                 </div>
             </div>
@@ -48,8 +535,8 @@
             <div class="top_4">
                 <div class="top_4_1">
                     <div class="handle">
-                        <a href="#">
-                            <img src="image/play/vip.png" width="25">
+                        <a href="../jsp/index.jsp">
+                            <img src="../image/play/vip.png" width="25">
                             <p>"VIP"</p>
                         </a>
                     </div>
@@ -68,53 +555,37 @@
                             <i class="icon"></i>
                             <p>"历史"</p>
                         </a>
+                        <div id="forHistory">
+                        </div>
                     </div>
                 </div>
                 <div class="top_4_4">
-                    <div class="login"><a href="#">
-                        <img src="image/play/touxiang.png">
-                    </a></div>
+                    <div class="login"><a href="wcg_personalInfoChange.html">
+                        <img src="../image/play/touxiang.png">
+                    </a>
+
+                    </div>
                 </div>
             </div>
         </div>
         <div class="play">
-            <div class="play_1">
-                <video controls="controls" autoplay="autoplay" src="video/拾金不昧.mp4" width="1100" height="488"></video>
-            </div>
-            <div class="play_2">
-                <div class="play_2_1">
-                    <ul>
-                        <li class="play_2_2"><a href="#">
-                            <span><i class="icon"></i></span>
-                            <span><p>收藏</p></span>
-                        </a></li>
-                        <li class="play_2_3"><a href="#">
-                            <span><i class="icon"></i></span>
-                            <span><p>下载</p></span>
-                        </a></li>
-                    </ul>
-                </div>
-                <div class="play_2_right">
-                    <div class="play_2_right_1">
-                        <input type="text" placeholder="来条弹幕吧~~~">
-                        <button type="button">发送</button>
-                    </div>
-                    <div class="play_2_right_2">
-                        <a href="javascripts:;" class="play_2_right_2_open">
-                            <span>弹</span>
-                        </a>
-                    </div>
+            <div class="Dplayer_box">
+                <div class="player_av">
+                    <div id="player1"></div>
                 </div>
             </div>
+
             <div class="play_3">
                 <div class="play_3_1">
-                    <p class="play_3_1_1">公益广告</p>
+                    <p class="play_3_1_1"></p>
                     <p class="play_3_1_2">每周五更新一集 会员版每周一更新一集</p>
                     <p class="play_3_1_3">你可能喜欢的节目</p>
                 </div>
                 <div class="play_3_2">
-                    <a class="play_3_2_1" href="#">
-                        <img src="image/play/054102015B792A2F00000176D30D19D4.jpg" width="160" height="90"/>
+                    <a class="play_3_2_1" href="#" id="ff"
+                       style="width: 160px;height: 90px;float: left; margin-left: 10px;margin-right: 10px;overflow:hidden;position: relative;">
+                        <img src="../image/video_image/video_image.jpg"
+                             style="width: 160px;height: 256px;position: relative;"/>
                     </a>
                     <div class="play_3_2_2">
                         <a href="#" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
@@ -122,8 +593,10 @@
                     <div class="play_3_2_3"><span>8679次播放</span></div>
                 </div>
                 <div class="play_3_2">
-                    <a class="play_3_2_1" href="#">
-                        <img src="image/play/054102015B792A2F00000176D30D19D4.jpg" width="160" height="90"/>
+                    <a class="play_3_2_1" href="#" id="gg"
+                       style="width: 160px;height: 90px;float: left; margin-left: 10px;margin-right: 10px;overflow:hidden;position: relative;">
+                        <img src="../image/play/054102015B792A2F00000176D30D19D4.jpg"
+                             style="width: 160px;height: 256px;position: relative;"/>
                     </a>
                     <div class="play_3_2_2">
                         <a href="#" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
@@ -131,8 +604,10 @@
                     <div class="play_3_2_3"><span>8679次播放</span></div>
                 </div>
                 <div class="play_3_2">
-                    <a class="play_3_2_1" href="#">
-                        <img src="image/play/054102015B792A2F00000176D30D19D4.jpg" width="160" height="90"/>
+                    <a class="play_3_2_1" href="#" id="hh"
+                       style="width: 160px;height: 90px;float: left; margin-left: 10px;margin-right: 10px;overflow:hidden;position: relative;">
+                        <img src="../image/play/054102015B792A2F00000176D30D19D4.jpg"
+                             style="width: 160px;height: 256px;position: relative;"/>
                     </a>
                     <div class="play_3_2_2">
                         <a href="#" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
@@ -140,8 +615,10 @@
                     <div class="play_3_2_3"><span>8679次播放</span></div>
                 </div>
                 <div class="play_3_2">
-                    <a class="play_3_2_1" href="#">
-                        <img src="image/play/054102015B792A2F00000176D30D19D4.jpg" width="160" height="90"/>
+                    <a class="play_3_2_1" href="#" id="ii"
+                       style="width: 160px;height: 90px;float: left; margin-left: 10px;margin-right: 10px;overflow:hidden;position: relative;">
+                        <img src="../image/play/054102015B792A2F00000176D30D19D4.jpg"
+                             style="width: 160px;height: 256px;position: relative;"/>
                     </a>
                     <div class="play_3_2_2">
                         <a href="#" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
@@ -152,7 +629,7 @@
         </div>
         <div class="tag">
             <div class="tag_1">
-                <p class="tag_1_1">公益广告</p>
+                <p class="tag_1_1"></p>
                 <p class="tag_1_2">每周五更新一集 会员版每周一更新一集</p>
             </div>
             <div class="tag_2">
@@ -164,36 +641,46 @@
     <div class="intro">
         <div class="intro_1"><p>简介</p></div>
         <div class="intro_2"><p>
-            《欢乐喜剧人》是东方卫视打造的首档明星喜剧竞赛真人秀节目。节目中汇聚了中国当下最顶级的喜剧笑星，致力于呈现中国最顶级的喜剧盛宴。
+
         </p></div>
     </div>
     <div class="recommend">
         <div class="recommend_1"><p>你可能还喜欢这些节目</p></div>
         <div class="recommend_2">
             <ul>
-                <li>
-                    <img src="image/play/introduce.png">
-                    <p>欢乐喜剧人</p>
+                <li class="recommend_2_1">
+                    <a href="#" id="aa"><img src="../image/play/introduce.png" class="recommend_2_2" width="150"
+                                             height="240">
+                    </a>
+                    <p class="recommend_2_3">欢乐喜剧人</p>
                 </li>
-                <li>
-                    <img src="image/play/introduce.png">
-                    <p>欢乐喜剧人</p>
+                <li class="recommend_2_1">
+                    <a href="#" id="bb"><img src="../image/play/introduce.png" class="recommend_2_2" width="150"
+                                             height="240">
+                    </a>
+                    <p class="recommend_2_3">欢乐喜剧人</p>
                 </li>
-                <li>
-                    <img src="image/play/introduce.png">
-                    <p>欢乐喜剧人</p>
+                <li class="recommend_2_1">
+                    <a href="#" id="cc"><img src="../image/play/introduce.png" class="recommend_2_2" width="150"
+                                             height="240">
+                    </a>
+                    <p class="recommend_2_3">欢乐喜剧人</p>
                 </li>
-                <li>
-                    <img src="image/play/introduce.png">
-                    <p>欢乐喜剧人</p>
+                <li class="recommend_2_1">
+                    <a href="#" id="dd"><img src="../image/play/introduce.png" class="recommend_2_2" width="150"
+                                             height="240">
+                    </a>
+                    <p class="recommend_2_3">欢乐喜剧人</p>
                 </li>
-                <li>
-                    <img src="image/play/introduce.png">
-                    <p>欢乐喜剧人</p>
+                <li class="recommend_2_1">
+                    <a href="#" id="ee"><img src="../image/play/introduce.png" class="recommend_2_2" width="150"
+                                             height="240">
+                    </a>
+                    <p class="recommend_2_3">欢乐喜剧人</p>
                 </li>
             </ul>
         </div>
-        <img src="image/play/haibao.png" width="375" height="500" class="recommend_3">
+        <img src="../image/play/haibao.png" width="375" height="500" class="recommend_3">
     </div>
 
 </div>
@@ -207,11 +694,11 @@
                     <a href="####" target="_blank">注册</a>
                 </div>
                 <div class="form-textarea">
-                    <textarea data-maxlength="300" name="content" placeholder="快来说说想法吧～"
-                              style="height: 81px;"></textarea>
+                    <div id="editor">
+                    </div>
                 </div>
                 <div class="form-footer">
-                    <input type="button" value="发表评论"/>
+                    <input id="buttom_sub" type="button" value="发表评论"/>
                 </div>
             </div>
             <div id="comment-block2">
@@ -233,11 +720,11 @@
                         <div class="comments-body-item">
                             <div class="comments-body-item1">
                                 <div class="comments-user-avatar">
-                                    <a href="####" target="_blank"><img src="image/img/a.jpg" height="50" width="50"/></a>
+                                    <a href="####" target="_blank"><img src="../img/a.jpg" height="50" width="50"/></a>
                                 </div>
                                 <div class="comments-user-info">
                                     <a href="####" target="_blank">
-                                        暮笙88800
+                                        用户：未取名用户
                                     </a>
                                 </div>
                                 <div class="comments-text">
@@ -245,13 +732,13 @@
                                         难道就我觉得还不错？？？？[爱心]继续支持
                                     </p>
                                 </div>
-                                <div>点赞 评论</div>
+                                <div class="comment-time">评论时间</div>
                             </div>
                         </div>
                         <div class="comments-body-item">
                             <div class="comments-body-item1">
                                 <div class="comments-user-avatar">
-                                    <a href="####" target="_blank"><img src="image/img/a.jpg" height="50" width="50"/></a>
+                                    <a href="####" target="_blank"><img src="../img/a.jpg" height="50" width="50"/></a>
                                 </div>
                                 <div class="comments-user-info">
                                     <a href="####" target="_blank">
@@ -263,13 +750,13 @@
                                         难道就我觉得还不错？？？？[爱心]继续支持
                                     </p>
                                 </div>
-                                <div>点赞 评论</div>
+                                <div class="comment-time">点赞 评论</div>
                             </div>
                         </div>
                         <div class="comments-body-item">
                             <div class="comments-body-item1">
                                 <div class="comments-user-avatar">
-                                    <a href="####" target="_blank"><img src="image/img/a.jpg" height="50" width="50"/></a>
+                                    <a href="####" target="_blank"><img src="../img/a.jpg" height="50" width="50"/></a>
                                 </div>
                                 <div class="comments-user-info">
                                     <a href="####" target="_blank">
@@ -281,13 +768,13 @@
                                         难道就我觉得还不错？？？？[爱心]继续支持
                                     </p>
                                 </div>
-                                <div>点赞 评论</div>
+                                <div class="comment-time">点赞 评论</div>
                             </div>
                         </div>
                         <div class="comments-body-item">
                             <div class="comments-body-item1">
                                 <div class="comments-user-avatar">
-                                    <a href="####" target="_blank"><img src="image/img/a.jpg" height="50" width="50"/></a>
+                                    <a href="####" target="_blank"><img src="../img/a.jpg" height="50" width="50"/></a>
                                 </div>
                                 <div class="comments-user-info">
                                     <a href="####" target="_blank">
@@ -299,13 +786,13 @@
                                         难道就我觉得还不错？？？？[爱心]继续支持
                                     </p>
                                 </div>
-                                <div>点赞 评论</div>
+                                <div class="comment-time">点赞 评论</div>
                             </div>
                         </div>
                         <div class="comments-body-item">
                             <div class="comments-body-item1">
                                 <div class="comments-user-avatar">
-                                    <a href="####" target="_blank"><img src="image/img/a.jpg" height="50" width="50"/></a>
+                                    <a href="####" target="_blank"><img src="../img/a.jpg" height="50" width="50"/></a>
                                 </div>
                                 <div class="comments-user-info">
                                     <a href="####" target="_blank">
@@ -317,13 +804,13 @@
                                         难道就我觉得还不错？？？？[爱心]继续支持
                                     </p>
                                 </div>
-                                <div>点赞 评论</div>
+                                <div class="comment-time">点赞 评论</div>
                             </div>
                         </div>
                         <div class="comments-body-item">
                             <div class="comments-body-item1">
                                 <div class="comments-user-avatar">
-                                    <a href="####" target="_blank"><img src="image/img/a.jpg" height="50" width="50"/></a>
+                                    <a href="####" target="_blank"><img src="../img/a.jpg" height="50" width="50"/></a>
                                 </div>
                                 <div class="comments-user-info">
                                     <a href="####" target="_blank">
@@ -335,7 +822,7 @@
                                         难道就我觉得还不错？？？？[爱心]继续支持
                                     </p>
                                 </div>
-                                <div>点赞 评论</div>
+                                <div class="comment-time">点赞 评论</div>
                             </div>
                         </div>
                     </div>
@@ -347,78 +834,6 @@
                 <h2 style="font-size: 26px;margin-bottom: 20px;line-height: 26px;color: #333;">相关精彩视频</h2>
             </div>
             <div class="c">
-                <div class="item">
-                    <a class="cover" href="####" target="_blank">
-                        <img src="image/img/054102015B792A2F00000176D30D19D4.jpg"/>
-                    </a>
-                    <div class="title">
-                        <a href="####" target="_blank" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
-                    </div>
-                    <div class="status"><span>8679次播放</span></div>
-                </div>
-                <div class="item">
-                    <a class="cover" href="####" target="_blank">
-                        <img src="image/img/054102015B792A2F00000176D30D19D4.jpg"/>
-                    </a>
-                    <div class="title">
-                        <a href="####" target="_blank" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
-                    </div>
-                    <div class="status"><span>8679次播放</span></div>
-                </div>
-                <div class="item">
-                    <a class="cover" href="####" target="_blank">
-                        <img src="image/img/054102015B792A2F00000176D30D19D4.jpg"/>
-                    </a>
-                    <div class="title">
-                        <a href="####" target="_blank" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
-                    </div>
-                    <div class="status"><span>8679次播放</span></div>
-                </div>
-                <div class="item">
-                    <a class="cover" href="####" target="_blank">
-                        <img src="image/img/054102015B792A2F00000176D30D19D4.jpg"/>
-                    </a>
-                    <div class="title">
-                        <a href="####" target="_blank" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
-                    </div>
-                    <div class="status"><span>8679次播放</span></div>
-                </div>
-                <div class="item">
-                    <a class="cover" href="####" target="_blank">
-                        <img src="image/img/054102015B792A2F00000176D30D19D4.jpg"/>
-                    </a>
-                    <div class="title">
-                        <a href="####" target="_blank" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
-                    </div>
-                    <div class="status"><span>8679次播放</span></div>
-                </div>
-                <div class="item">
-                    <a class="cover" href="####" target="_blank">
-                        <img src="image/img/054102015B792A2F00000176D30D19D4.jpg"/>
-                    </a>
-                    <div class="title">
-                        <a href="####" target="_blank" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
-                    </div>
-                    <div class="status"><span>8679次播放</span></div>
-                </div>
-                <div class="item">
-                    <a class="cover" href="####" target="_blank">
-                        <img src="image/img/054102015B792A2F00000176D30D19D4.jpg"/>
-                    </a>
-                    <div class="title">
-                        <a href="####" target="_blank" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
-                    </div>
-                    <div class="status"><span>8679次播放</span></div>
-                </div>
-                <div class="item">
-                    <a class="cover" href="####" target="_blank">
-                        <img src="image/img/054102015B792A2F00000176D30D19D4.jpg"/>
-                    </a>
-                    <div class="title">
-                        <a href="####" target="_blank" title="众人合力 唤醒林动回归">众人合力 唤醒林动回归</a>
-                    </div>
-                    <div class="status"><span>8679次播放</span></div>
-                </div>
             </div>
         </div>
     </div>
@@ -471,5 +886,61 @@
         </div>
     </div>
 </div>
+//视频
+<script src="../js/DPlayer.min.js"></script>
+<script>
+    console.log(" %c 该项目基于Dplayer.js", 'color:red')
+
+    // 弹出框
+    function alert_back(text) {
+        $(".alert_back").html(text).show();
+        setTimeout(function () {
+            $(".alert_back").fadeOut();
+        }, 1200)
+    }
+
+    //秒转分秒
+    function formatTime(seconds) {
+        return [
+//            parseInt(seconds / 60 / 60),
+            parseInt(seconds / 60 % 60),
+            parseInt(seconds % 60)
+        ]
+            .join(":")
+            .replace(/\b(\d)\b/g, "0$1");
+    }
+
+    $.ajax({
+        url: "barrage.html",
+        success: function (data) {
+            if (data.code == "1") {
+                var danmaku = data.danmaku;
+                var autor = "农民";
+                $(".danmuku_num").text(danmaku.length)
+                $(danmaku).each(function (index, item) {
+                    if (item.type == "right") {
+                    } else {
+                        autor = "地主"
+                    }
+                    var oLi = `   <ol class="danmuku_list" time="${item.time}">
+            <li>${formatTime(item.time)}</li>
+            <li title="${item.text}">${item.text}</li>
+            <li>${autor}</li>
+</ol>
+`
+                    $(".list_ovefiow").append(oLi);
+                    autor = "农民";
+                })
+            } else {
+                alert_back("弹幕加载失败 -v-!");
+            }
+            $(".danmuku_list").on("click", function () {
+
+                dp.seek($(this).attr("time"))
+            })
+        }
+    })
+
+</script>
 </body>
 </html>

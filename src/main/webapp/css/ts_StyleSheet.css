@@ -156,6 +156,10 @@
     font-size: 14px;
 }
 
+.comment-time {
+    margin-left: 700px;
+}
+
 #main-right {
     display: block;
     float: left;
